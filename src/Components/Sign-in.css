@@ -1,0 +1,82 @@
+
+
+.sign-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sign-title {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #2874f0; 
+}
+
+.sign-form .form-label {
+  font-weight: 500;
+  color: #212121;
+}
+
+.sign-form .form-control {
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.sign-form .btn-primary {
+  background-color: #2874f0; 
+  border: none;
+  width: 100%;
+  padding: 10px;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.sign-form .btn-primary:hover {
+  background-color: #1565c0;
+}
+.error-msg {
+  color: red;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.signup-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.signup-link a {
+  color: #2874f0;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.google-btn {
+  background-color: #fff !important;
+  color: #757575 !important;
+  border: 1px solid #ddd !important;
+  font-weight: 500;
+  font-size: 16px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  transition: box-shadow 0.2s ease;
+}
+.google-btn:hover {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  background-color: #f7f7f7 !important;
+}
+.google-icon {
+  height: 20px;
+  width: 20px;
+}
