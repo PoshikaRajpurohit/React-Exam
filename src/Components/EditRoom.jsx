@@ -1,296 +1,151 @@
 import { useEffect, useState } from "react";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router";
+import { Button, Container, Form } from "react-bootstrap";
+import { useNavigate, useParams } from "react-router-dom";
+import {getRoomAsync,updateRoomAsync} from "../Services/Action/RoomAction";
 import { ToastContainer, toast } from "react-toastify";
 import { uploadImage } from "../Services/UploadImage";
-import { getRoomAsync, updateRoomAsync } from "../Services/Action/RoomAction";
-import "../App.css";
-
+import "../App.css"
 const EditRoom = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { id } = useParams();
-
-  const { room, isUpdated } = useSelector((state) => state.RoomReducer);
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [submitted, setSubmitted] = useState(false);
+  const { room, isUpdated, errorMsg } = useSelector((state) => state.RoomReducer);
   const initialState = {
     id: "",
-    name: "",
+    number: "",
     desc: "",
     category: "",
-    capacity: "",
+    bed:" ",
     price: "",
     image: "",
-    floor: "",
-    bedType: "",
-    size: "",
-    view: "",
-    rating: "",
   };
-
   const [inputForm, setInputForm] = useState(initialState);
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    dispatch(getRoomAsync(id));
-  }, [dispatch, id]);
-
-  useEffect(() => {
-    if (room) {
-      setInputForm(room);
-    }
-  }, [room]);
-
-  useEffect(() => {
-    if (isUpdated) {
-      toast.success("Room updated successfully!");
-      setTimeout(() => navigate("/"), 2000);
-    }
-  }, [isUpdated, navigate]);
-
-  const handleChange = (e) => {
+  const [fileName, setFileName] = useState(''); 
+  const handleChanged = (e) => {
     const { name, value } = e.target;
-        setInputForm({ ...inputForm, [name]: value });
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
+    setInputForm({ ...inputForm, [name]: value });
+     if (e.target.files) {
+      setFileName(e.target.files.name);
+    } else {
+      setFileName('No file chosen');
+    }
   };
-
   const validateForm = () => {
-    const {
-      name,
-      desc,
-      category,
-      price,
-      image,
-      bedType,
-      capacity,
-      view,
-      rating,
-    } = inputForm;
+    const { number, desc, category, bed,price, image } = inputForm;
     const newErrors = {};
-    if (!name) newErrors.name = "Room name is required.";
+    if (!number) newErrors.title = "Room Number is required.";
     if (!desc) newErrors.desc = "Description is required.";
-    if (!category) newErrors.category = "Category is required.";
-    if (!view) newErrors.view = "Please select view.";
-    if (!rating) newErrors.rating = "Please select rating.";
-    if (!capacity) newErrors.capacity = "Capacity is required.";
-    if (!bedType) newErrors.bedType = "Please select bed type.";
-    if (!price || isNaN(price) || Number(price) <= 0)
-      newErrors.price = "Valid price required.";
-    if (!image) newErrors.image = "Image is required.";
+    if (!category) newErrors.category = "Category must be selected.";
+    if (!bed) newErrors.category = "Bed Type must be selected.";
+    if (!price) newErrors.price = "Price is required.";
+    else if (isNaN(price) || Number(price) <= 0)
+      newErrors.price = "Price must be a positive number.";
+    if (!image) newErrors.image = "Image URL is required.";
     return newErrors;
   };
-
+  
   const handleFileUpload = async (e) => {
-    try {
-      const uploaded = await uploadImage(e.target.files[0]);
-      setInputForm((prev) => ({
-        ...prev,
-        image: uploaded,
-      }));
-      toast.success("Image uploaded successfully!");
-    } catch (error) {
-      toast.error("Image upload failed.");
-      setErrors((prev) => ({
-        ...prev,
-        image: "Image upload failed. Try again.",
-      }));
+    const file = e.target.files[0];
+    if (file) {
+      setFileName(file.name);
+      try {
+        const image = await uploadImage(file);
+        setInputForm((prev) => ({ ...prev, image }));
+        toast.success("Image uploaded successfully!");
+      } catch (err) {
+        toast.error("Image upload failed!");
+      }
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validateForm();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      toast.error("Please fix the form errors.");
-      return;
-    }
-    dispatch(updateRoomAsync(inputForm));
-    toast.success("Room updated successfully!");
-    navigate("/");
-  };
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const validationErrors = validateForm();
+  if (Object.keys(validationErrors).length) {
+    setErrors(validationErrors);
+    toast.error("Please fix the form errors before submitting.");
+    return;
+  }
+  setSubmitted(true); 
+  dispatch(updateRoomAsync({ ...inputForm, id }));
+};
+
+  useEffect(() => {
+    if (id) dispatch(getRoomAsync(id));
+  }, [id, dispatch]);
+  useEffect(() => {
+    if (room) setInputForm(room);
+  }, [room]);
+   useEffect(() => {
+  if (submitted && isUpdated) {
+    toast.success(" Room updated successfully!");
+    setTimeout(() => navigate("/"), 2000);
+  }
+}, [submitted, isUpdated, navigate]);
 
   return (
-    <Container className="py-4">
-      <ToastContainer position="top-center" autoClose={2000} theme="colored" />
-      <Card className="p-4 shadow-sm border-0 bg-light rounded-4">
-        <h4 className="mb-4">Edit Room</h4>
-        <Form onSubmit={handleSubmit}>
-          <Row className="mb-3">
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Room Name</Form.Label>
-                <Form.Control
-                  name="name"
-                  value={inputForm.name}
-                  onChange={handleChange}
-                />
-                {errors.name && <small className="text-danger">{errors.name}</small>}
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={2}
-                  name="desc"
-                  value={inputForm.desc}
-                  onChange={handleChange}
-                />
-                {errors.desc && <small className="text-danger">{errors.desc}</small>}
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Price (₹)</Form.Label>
-                <Form.Control
-                  name="price"
-                  type="number"
-                  value={inputForm.price}
-                  onChange={handleChange}
-                />
-                {errors.price && <small className="text-danger">{errors.price}</small>}
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Category</Form.Label>
-                <Form.Select
-                  name="category"
-                  value={inputForm.category}
-                  onChange={handleChange}
-                >
-                  <option value="">Select Category</option>
-                  <option>AC</option>
-                  <option>NON-AC</option>
-                  <option>Deluxe</option>
-                  <option>Luxury</option>
-                </Form.Select>
-                {errors.category && (
-                  <small className="text-danger">{errors.category}</small>
-                )}
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Floor</Form.Label>
-                <Form.Control
-                  name="floor"
-                  value={inputForm.floor}
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Bed Type</Form.Label>
-                <Form.Select
-                  name="bedType"
-                  value={inputForm.bedType}
-                  onChange={handleChange}
-                >
-                  <option value="">Select</option>
-                  <option>Queen</option>
-                  <option>King</option>
-                  <option>Twin</option>
-                </Form.Select>
-                
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col md={4}>
-              <Form.Group>
-                <Form.Label>Capacity</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="capacity"
-                  value={inputForm.capacity}
-                  onChange={handleChange}
-                />
-                {errors.capacity && (
-                  <small className="text-danger">{errors.capacity}</small>
-                )}
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>View</Form.Label>
-                <Form.Select
-                  name="view"
-                  value={inputForm.view}
-                  onChange={handleChange}
-                >
-                  <option value="">Select</option>
-                  <option>Sea</option>
-                  <option>City</option>
-                  <option>Garden</option>
-                </Form.Select>
-                {errors.view && (
-                  <small className="text-danger">{errors.view}</small>
-                )}
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Rating</Form.Label>
-                <Form.Select
-                  name="rating"
-                  value={inputForm.rating}
-                  onChange={handleChange}
-                >
-                  <option value="">Select</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                </Form.Select>
-                {errors.rating && (
-                  <small className="text-danger">{errors.rating}</small>
-                )}
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row className="mb-3">
-            <Col md={6}>
-              <Form.Group>
-                <Form.Label>Image</Form.Label>
-                <Form.Control type="file" onChange={handleFileUpload} />
-                {errors.image && (
-                  <small className="text-danger">{errors.image}</small>
-                )}
-              </Form.Group>
-              {inputForm.image && (
-                <img
-                  src={inputForm.image}
-                  alt="Preview"
-                  className="mt-2 rounded"
-                  width={150}
-                />
-              )}
-            </Col>
-          </Row>
-
-          <div className="text-end">
-            <Button type="submit" className="px-5">
-              Update Room
-            </Button>
-          </div>
-        </Form>
-      </Card>
+    <Container className="edit-container mt-5 p-4 shadow rounded bg-white" style={{ width: "700px" }}>
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+      <h2 className="text-primary fw-bold text-center mb-4">Edit Room</h2>
+      <Form onSubmit={handleSubmit}>  
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-semibold">Room Number</Form.Label>
+          <Form.Control type="number" placeholder="Enter Room Number" name="number" value={inputForm.number} onChange={handleChanged}/>
+          {errors.title && <small className="text-danger">{errors.title}</small>}
+        </Form.Group>   
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-semibold">Description</Form.Label>
+          <Form.Control as="textarea" rows={3} placeholder="Enter Product Description" name="desc" value={inputForm.desc} 
+          onChange={handleChanged}/>
+          {errors.desc && <small className="text-danger">{errors.desc}</small>}
+        </Form.Group>   
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-semibold">Price</Form.Label>
+          <Form.Control type="number" placeholder="Enter Room Price" name="price" value={inputForm.price} onChange={handleChanged}/>
+          {errors.price && <small className="text-danger">{errors.price}</small>}
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-semibold">Category</Form.Label>
+          <Form.Select name="category" value={inputForm.category} onChange={handleChanged}>
+            <option value="">Select Category</option>
+            <option value="AC">AC</option>
+            <option value="NON AC">NON AC</option>
+            <option value="Deluxe">Deluxe</option>
+            <option value="Luxury">Luxury</option>
+          </Form.Select>
+          {errors.category && (<small className="text-danger">{errors.category}</small>)}
+        </Form.Group>     
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-semibold">Bed Type</Form.Label>
+          <Form.Select name="bed" value={inputForm.bed} onChange={handleChanged}>
+            <option value="">Select Category</option>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+          </Form.Select>
+          {errors.category && (<small className="text-danger">{errors.category}</small>)}
+        </Form.Group>     
+        <Form.Group className="mb-4">
+          <Form.Label className="fw-semibold">Room Image URL</Form.Label>
+          <Form.Control type="file" placeholder="Enter Image URL" name="image"  onChange={handleFileUpload}/>
+          {inputForm.image && (
+          <Form.Text className="text-muted">
+          Current Image: <a href={inputForm.image} target="_blank" rel="noreferrer">{inputForm.image.split('/').pop()}</a>
+          </Form.Text>
+          )}
+          {errors.image && <small className="text-danger">{errors.image}</small>}
+        </Form.Group>
+        <div className="text-center">
+          <Button variant="primary" type="submit" className="px-5 py-2 rounded-pill fw-semibold">
+            Update Room
+          </Button>
+        </div>
+        {errorMsg && <p className="text-danger mt-3 text-center">{errorMsg}</p>}
+      </Form>
     </Container>
   );
 };
-
 export default EditRoom;
+

@@ -5,31 +5,31 @@ export const loading = () => (
 );
 export const addRoomSuc = ()     =>
    (
-    { type: "ADD_Room_SUC" });
+    { type: "ADD_ROOM_SUC" });
 export const addRoomRej = (err)  =>
    (
-    { type: "ADD_Room_REJ",  payload: err }
+    { type: "ADD_ROOM_REJ",  payload: err }
   );
 export const getAllRooms= (data) =>
    (
-    { type: "GET_ALL_RoomS", payload: data }
+    { type: "GET_ALL_ROOMS", payload: data }
   );
 export const getRoomSuc = (data) =>
    (
-    { type: "GET_Room_SUC", 
+    { type: "GET_ROOM_SUC", 
        payload: data }
       );
 export const deleteRoomRej= (err)=>
-   ({ type: "DELETE_Room_REJ", payload: err }
+   ({ type: "DELETE_ROOM_REJ", payload: err }
    );
 export const updateRoomSuc= (data) =>
-   ({ type: "UPDATE_Room_SUC", 
+   ({ type: "UPDATE_ROOM_SUC", 
     payload: data }
   );
 export const getAllRoomsAsync = () => async (dispatch) => {
   dispatch(loading());
   try {
-    const snapshot = await getDocs(collection(db, "Rooms"));
+    const snapshot = await getDocs(collection(db, "rooms"));
     const data = snapshot.docs.map((rec) => rec.data());
     dispatch(getAllRooms(data));
   } catch (err) {
@@ -39,45 +39,39 @@ export const getAllRoomsAsync = () => async (dispatch) => {
 export const addNewRoomAsync = (data) => async (dispatch) => {
   dispatch(loading());
   try {
-    await setDoc(doc(db, "Rooms", data.id), data);
+    await setDoc(doc(db, "rooms", data.id), data);
     dispatch(addRoomSuc());
       dispatch(getAllRoomsAsync());
   } catch (err) {
-    dispatch(addRoomRej(err.message));  
+    dispatch(addRoomRej(err.message));
+   
   }
 };
-
 export const deleteRoomAsync = (id) => async (dispatch) => {
   dispatch(loading());
   try {
-    await deleteDoc(doc(db, "Rooms", id));
+    await deleteDoc(doc(db, "rooms", id));
     dispatch(getAllRoomsAsync()); 
   } catch (err) {
     dispatch(deleteRoomRej(err.message));
   }
 };
 export const getRoomAsync = (id) => async (dispatch) => {
+  dispatch(loading());
   try {
-    const docRef = doc(db, "rooms", id);
-    const snapshot = await getDoc(docRef);
-    if (snapshot.exists()) {
-      dispatch({
-        type: "GET_ROOM_SUCCESS",
-        payload: { id: snapshot.id, ...snapshot.data() },
-      });
-    }
-  } catch (error) {
-    console.error("Error fetching room:", error);
+    const res = await getDoc(doc(db, "rooms", id));
+    dispatch(getRoomSuc(res.data()));
+  } catch (err) {
+    dispatch(deleteRoomRej(err.message));
   }
 };
 export const updateRoomAsync = (data) => async (dispatch) => {
   dispatch(loading());
   try {
-    await updateDoc(doc(db, "Rooms", data.id), data);
+    await updateDoc(doc(db, "rooms", data.id), data);
     dispatch(updateRoomSuc(data));    
   } catch (err) {
     dispatch(deleteRoomRej(err.message));
   }
 };
-
 

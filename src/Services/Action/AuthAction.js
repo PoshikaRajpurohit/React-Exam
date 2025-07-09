@@ -18,17 +18,24 @@ import { auth } from "./../../Firebase"
         payload: err
         }}
     export const signUpAsync = (data) => {
-        return async (dispatch) => {
-            try {
-            let userCred = await createUserWithEmailAndPassword(auth, data.email, data.password)
-            if(userCred.user){
-                dispatch(signUpSuc());
-            }
-         } catch (error) {
-            console.log(error);
-            dispatch(errorMsg(error.message));
-            }
-        }}
+  return async (dispatch) => {
+    try {
+      const userCred = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      if (userCred.user) {
+        await setDoc(doc(db, "users", userCred.user.uid), {
+          email: data.email,
+          displayName: data.displayName || "",
+          role: data.role || "customer" 
+        });
+
+        dispatch(signUpSuc());
+      }
+    } catch (error) {
+      console.log(error);
+      dispatch(errorMsg(error.message));
+    }
+  };
+};
 
 
     export const signINAsync = (data) => {

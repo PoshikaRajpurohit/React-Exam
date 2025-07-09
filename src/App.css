@@ -1,42 +1,282 @@
 #root {
-  max-width: 1280px;
+  width: 1320px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* AddRoom.css */
+
+.add-product-card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.add-product-card h3 {
+  color: #0d6efd;
+  font-weight: 600;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.form-label {
+  font-size: 0.95rem;
+  color: #333;
 }
 
-.card {
-  padding: 2em;
+.form-control,
+.form-select {
+  border-radius: 8px;
+  font-size: 0.95rem;
 }
 
-.read-the-docs {
-  color: #888;
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  border-color: #0d6efd;
 }
+
+.text-danger {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+button[type="submit"] {
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: 0.2s all ease-in-out;
+}
+
+button[type="submit"]:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-1px);
+}
+
+
+
+/* EditRoom.css */
+
+.edit-container {
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  max-width: 720px;
+  margin: auto;
+}
+
+.edit-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+.form-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  border-color: #0d6efd;
+}
+
+.text-danger {
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+button[type="submit"] {
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: 0.2s ease-in-out;
+}
+
+button[type="submit"]:hover {
+  background-color: #0b5ed7;
+  transform: scale(1.01);
+}
+
+a {
+  color: #0d6efd;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+
+/* Home.css */
+.hotel-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.hotel-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.product-img {
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.room-number {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.room-img-wrap {
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+
+/* BookingForm.css */
+
+.booking-card {
+  border-radius: 12px;
+  border: none;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.booking-card h2 {
+  font-weight: 600;
+  color: #b79b5c;
+  letter-spacing: 1px;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.form-control {
+  border-radius: 8px;
+  border-color: #ccc;
+}
+
+.form-control:focus {
+  border-color: #b79b5c;
+  box-shadow: 0 0 0 0.2rem rgba(183, 155, 92, 0.25);
+}
+
+.text-danger {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.booking-total {
+  font-size: 1.1rem;
+  color: #000;
+  text-align: right;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.confirm-btn {
+  background-color: #b79b5c;
+  border: none;
+  padding: 0.6rem 1.5rem;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.confirm-btn:hover {
+  background-color: #a78a4a;
+}
+
+/* Payment.css */
+.payment-card {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.payment-card h2 {
+  font-weight: 600;
+  color: #333;
+}
+
+.payment-methods .form-check {
+  margin-bottom: 0.75rem;
+}
+
+.payment-methods .form-check-label {
+  font-size: 1rem;
+  color: #444;
+}
+
+.payment-summary {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  color: #2c3e50;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #222;
+}
+
+.form-control {
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.95rem;
+}
+
+.btn-success {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 8px;
+}
+
+.payment-methods .form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: border-color 0.2s ease;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+
+.payment-methods .form-check:hover {
+  border-color: #ffc107;
+}
+
+
+.payment-methods input[type="radio"]:checked + label {
+  font-weight: 600;
+  color: #000;
+}
+
+
+.payment-methods .form-check input[type="radio"] {
+  margin-right: 0.6rem;
+}
+
+
+.payment-methods .form-check label {
+  margin-bottom: 0;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+}
+

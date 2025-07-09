@@ -13,12 +13,18 @@ const authReducer = (state = initialState, action) => {
                 isCreated: true
             }
         case "SIGN_IN_SUC":
-            return {
-            ...state,
-            user: action.payload,
-            isCreated: false,
-            errorMSG: ""
-            };
+  return {
+    ...state,
+    user: {
+      uid: action.payload.uid,
+      email: action.payload.email,
+      displayName: action.payload.displayName,
+      role: action.payload.role,
+    },
+    isCreated: false,
+    errorMSG: ""
+  };
+
         case "SIGN_OUT_SUC":
             return {
                 ...state,
