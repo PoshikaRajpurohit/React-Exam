@@ -21,7 +21,7 @@ export const fetchBookingsAsync = (userId, isAdmin) => async (dispatch) => {
       }
     } else {
       const snap = await getDocs(collection(db, "bookings", userId, "reservations"));
-      bookings = snap.docs.map((doc) => doc.data());
+      bookings = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     }
 
     dispatch({ type: FETCH_BOOKINGS_SUCCESS, payload: bookings });

@@ -8,6 +8,7 @@ const Payment = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const bookingData = state?.bookingData;
+
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [upiId, setUpiId] = useState("");
   const [cardNumber, setCardNumber] = useState("");
@@ -68,37 +69,84 @@ const Payment = () => {
       },
     });
   };
+
   return (
-    <Container className="py-5">
-      <Card className="p-4 shadow-sm payment-card">
-        <h2 className="mb-4">Payment</h2>
-        <p className="payment-summary">
-          <strong>Amount to Pay:</strong> ₹{bookingData?.totalPayable || 0}
+    <Container
+      fluid
+      className="d-flex justify-content-center align-items-center py-5"
+      style={{ minHeight: "100vh", backgroundColor: "#f4ede1" }}
+    >
+      <Card
+        className="p-4 shadow-sm border-0"
+        style={{
+          maxWidth: "520px",
+          width: "90%",
+          borderRadius: "18px",
+          backgroundColor: "#fff8f0",
+        }}
+      >
+        <h3
+          className="text-center mb-4"
+          style={{ color: "#6c4e2a", fontFamily: "Georgia, serif", fontWeight: "bold" }}
+        >
+          Payment Gateway
+        </h3>
+
+        <p className="text-center fw-semibold" style={{ fontSize: "1.1rem", color: "#6c4e2a" }}>
+          Amount to Pay: <span style={{ color: "#b0892b" }}>₹{bookingData?.totalPayable || 0}</span>
         </p>
-        <Form className="payment-methods">
-         <Form.Group className="mb-3 payment-methods">
-  <div className="form-check">
-    <Form.Check type="radio" label="UPI / Google Pay / PhonePe" value="upi" name="paymentMethod" checked={paymentMethod === "upi"} 
-    onChange={(e) => setPaymentMethod(e.target.value)}/>
-  </div>
-  <div className="form-check">
-    <Form.Check type="radio" label="Credit / Debit Card" value="card" name="paymentMethod" checked={paymentMethod === "card"} 
-    onChange={(e) => setPaymentMethod(e.target.value)}/>
-  </div>
-  <div className="form-check">
-    <Form.Check type="radio" label="Net Banking" value="netbanking" name="paymentMethod" checked={paymentMethod === "netbanking"} 
-    onChange={(e) => setPaymentMethod(e.target.value)}/>
+
+        <Form className="mt-4">
+          <Form.Group className="mb-4">
+  <Form.Label className="fw-semibold text-muted">Select Payment Method</Form.Label>
+  <div className="d-flex flex-column gap-2 mt-2">
+    <Form.Check
+      type="radio"
+      label="UPI / Google Pay / PhonePe"
+      value="upi"
+      name="paymentMethod"
+      id="upi"
+      checked={paymentMethod === "upi"}
+      onChange={(e) => setPaymentMethod(e.target.value)}
+      className="custom-radio"
+    />
+    <Form.Check
+      type="radio"
+      label="Credit / Debit Card"
+      value="card"
+      name="paymentMethod"
+      id="card"
+      checked={paymentMethod === "card"}
+      onChange={(e) => setPaymentMethod(e.target.value)}
+      className="custom-radio"
+    />
+    <Form.Check
+      type="radio"
+      label="Net Banking"
+      value="netbanking"
+      name="paymentMethod"
+      id="netbanking"
+      checked={paymentMethod === "netbanking"}
+      onChange={(e) => setPaymentMethod(e.target.value)}
+      className="custom-radio"
+    />
   </div>
 </Form.Group>
 
+
           {paymentMethod === "upi" && (
             <Form.Group className="mb-3">
-              <Form.Label>Enter UPI ID</Form.Label>
-              <Form.Control type="text" name="upiId" placeholder="e.g. name@upi" value={upiId} onChange={handleChanged} 
-              isInvalid={!!errors.upiId}/>
-              <Form.Control.Feedback type="invalid">
-                {errors.upiId}
-              </Form.Control.Feedback>
+              <Form.Label>UPI ID</Form.Label>
+              <Form.Control
+                type="text"
+                name="upiId"
+                placeholder="e.g. name@upi"
+                value={upiId}
+                onChange={handleChanged}
+                isInvalid={!!errors.upiId}
+                className="themed-input"
+              />
+              <Form.Control.Feedback type="invalid">{errors.upiId}</Form.Control.Feedback>
             </Form.Group>
           )}
 
@@ -106,30 +154,58 @@ const Payment = () => {
             <>
               <Form.Group className="mb-3">
                 <Form.Label>Card Number</Form.Label>
-                <Form.Control type="text" name="cardNumber" placeholder="Your card number" value={cardNumber} onChange={handleChanged} 
-                isInvalid={!!errors.cardNumber}/>
-                <Form.Control.Feedback type="invalid">
-                  {errors.cardNumber}
-                </Form.Control.Feedback>
+                <Form.Control
+                  type="text"
+                  name="cardNumber"
+                  placeholder="Your card number"
+                  value={cardNumber}
+                  onChange={handleChanged}
+                  isInvalid={!!errors.cardNumber}
+                  className="themed-input"
+                />
+                <Form.Control.Feedback type="invalid">{errors.cardNumber}</Form.Control.Feedback>
               </Form.Group>
+
               <Form.Group className="mb-3">
                 <Form.Label>Expiry</Form.Label>
-                <Form.Control type="text" name="expiry" placeholder="MM/YY" value={expiry} onChange={handleChanged} isInvalid={!!errors.expiry}/>
-                <Form.Control.Feedback type="invalid">
-                  {errors.expiry}
-                </Form.Control.Feedback>
+                <Form.Control
+                  type="text"
+                  name="expiry"
+                  placeholder="MM/YY"
+                  value={expiry}
+                  onChange={handleChanged}
+                  isInvalid={!!errors.expiry}
+                  className="themed-input"
+                />
+                <Form.Control.Feedback type="invalid">{errors.expiry}</Form.Control.Feedback>
               </Form.Group>
+
               <Form.Group className="mb-3">
                 <Form.Label>CVV</Form.Label>
-                <Form.Control type="password" name="cvv" placeholder="***" value={cvv} onChange={handleChanged} isInvalid={!!errors.cvv}/>
-                <Form.Control.Feedback type="invalid">
-                  {errors.cvv}
-                </Form.Control.Feedback>
+                <Form.Control
+                  type="password"
+                  name="cvv"
+                  placeholder="***"
+                  value={cvv}
+                  onChange={handleChanged}
+                  isInvalid={!!errors.cvv}
+                  className="themed-input"
+                />
+                <Form.Control.Feedback type="invalid">{errors.cvv}</Form.Control.Feedback>
               </Form.Group>
             </>
           )}
 
-          <Button onClick={handlePayment} className="btn btn-success fw-bold">
+          <Button
+            onClick={handlePayment}
+            className="w-100 mt-3"
+            style={{
+              backgroundColor: "#b0892b",
+              border: "none",
+              fontWeight: "bold",
+              fontSize: "1.05rem",
+            }}
+          >
             Pay Now
           </Button>
         </Form>
@@ -139,4 +215,3 @@ const Payment = () => {
 };
 
 export default Payment;
-

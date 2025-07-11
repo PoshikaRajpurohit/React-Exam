@@ -1,26 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { Container, Card, Spinner, Row, Col } from "react-bootstrap";
+import { Container, Card, Spinner, Row, Col, Button } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../Firebase";
+import { toast, ToastContainer } from "react-toastify";
+import "../App.css";
 
 const MyBookings = () => {
   const { user } = useSelector((state) => state.authReducer);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchBookings = async () => {
+    try {
+      const snap = await getDocs(collection(db, "bookings", user.uid, "reservations"));
+      const list = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setBookings(list);
+    } catch (err) {
+      console.error("Error fetching bookings", err);
+      toast.error("Failed to load bookings.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemove = async (bookingId, firebaseDocId) => {
+    try {
+      await deleteDoc(doc(db, "bookings", user.uid, "reservations", firebaseDocId));
+      setBookings((prev) => prev.filter((b) => b.id !== firebaseDocId));
+      toast.success("Booking removed successfully!");
+    } catch (err) {
+      console.error("Remove failed", err);
+      toast.error("Failed to remove booking.");
+    }
+  };
+
   useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const snap = await getDocs(collection(db, "bookings", user.uid, "reservations"));
-        const list = snap.docs.map((doc) => doc.data());
-        setBookings(list);
-      } catch (err) {
-        console.error("Error fetching bookings", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     if (user?.uid) fetchBookings();
   }, [user]);
 
@@ -38,19 +53,31 @@ const MyBookings = () => {
 
   return (
     <Container className="py-4">
-      <h3 className="mb-4">My Bookings</h3>
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+      <h3 className="mb-4 text-center" style={{ color: "#b89d5b", fontWeight: "bold" }}>
+        My Bookings
+      </h3>
       <Row>
         {bookings.map((booking) => (
-          <Col md={6} lg={4} key={booking.bookingId}>
-            <Card className="mb-4 shadow-sm">
+          <Col md={6} lg={4} key={booking.id}>
+            <Card className="mb-4 shadow-sm border-0" style={{ background: "#fffdf7", borderRadius: "15px" }}>
               <Card.Body>
-                <Card.Title>Booking ID: {booking.bookingId}</Card.Title>
-                <Card.Text>
-                  <strong>Guest:</strong> {booking.guestInfo.name}<br />
-                  <strong>Check-In:</strong> {booking.guestInfo.checkIn}<br />
-                  <strong>Check-Out:</strong> {booking.guestInfo.checkOut}<br />
+                <Card.Title style={{ color: "#a67c2d" }}>Booking ID: {booking.bookingId}</Card.Title>
+                <Card.Text style={{ fontSize: "0.95rem", color: "#5c4b27" }}>
+                  <strong>Guest:</strong> {booking.guestInfo.name} <br />
+                  <strong>Check-In:</strong> {booking.guestInfo.checkIn} <br />
+                  <strong>Check-Out:</strong> {booking.guestInfo.checkOut} <br />
                   <strong>Total:</strong> ₹{booking.totalPayable}
                 </Card.Text>
+                <div className="d-grid">
+                  <Button
+  className="taj-remove-btn"
+  onClick={() => handleRemove(booking.bookingId, booking.id)}
+>
+  Remove Booking
+</Button>
+
+                </div>
               </Card.Body>
             </Card>
           </Col>
@@ -59,4 +86,5 @@ const MyBookings = () => {
     </Container>
   );
 };
+
 export default MyBookings;

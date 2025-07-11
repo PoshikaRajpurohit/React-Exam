@@ -52,7 +52,7 @@ const BookingForm = () => {
     return newErrors;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
     if (Object.keys(validationErrors).length > 0) {
@@ -65,81 +65,118 @@ const BookingForm = () => {
       toast.error("Room details not found. Please select a room.");
       return;
     }
+
     dispatch(createBookingAsync(formData, room, room.price));
     navigate("/payment", {
-        state: {
+      state: {
         bookingData: {
-        userId: user?.uid,
-        guestInfo: formData,
-        number: room.number,
-        totalPayable: room.price,
-    },
-  },
-});
-
+          userId: user?.uid,
+          guestInfo: formData,
+          number: room.number,
+          totalPayable: room.price,
+        },
+      },
+    });
   };
 
   return (
-    <Container className="py-5">
-      <Card className="p-4 shadow-sm booking-card">
-        <h2 className="mb-4">Booking Information</h2>
+    <Container fluid className="booking-bg py-5 d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+      <Card className="p-4 shadow booking-card border-0" style={{ maxWidth: "550px", width: "90%", borderRadius: "18px", backgroundColor: "#fff8f0" }}>
+        <h3 className="text-center mb-4 booking-title">Reservation Details</h3>
         <Form onSubmit={handleSubmit}>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Full Name</Form.Label>
-                <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Enter your full name"/>
-                {errors.name && <small className="text-danger">{errors.name}</small>}
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Email Address</Form.Label>
-                <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Enter your email"/>
-                {errors.email && <small className="text-danger">{errors.email}</small>}
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Phone Number</Form.Label>
-                <Form.Control type="tel" name="phone" value={formData.phone} onChange={handleChange} placeholder="Enter 10-digit phone number"/>
-                {errors.phone && <small className="text-danger">{errors.phone}</small>}
-              </Form.Group>
-            </Col>
-          </Row>
+          <Form.Group className="mb-3">
+            <Form.Label className="booking-label">Full Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              placeholder="John Doe"
+              value={formData.name}
+              onChange={handleChange}
+              className="booking-input"
+            />
+            {errors.name && <small className="text-danger">{errors.name}</small>}
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="booking-label">Email Address</Form.Label>
+            <Form.Control
+              type="email"
+              name="email"
+              placeholder="john@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              className="booking-input"
+            />
+            {errors.email && <small className="text-danger">{errors.email}</small>}
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="booking-label">Phone Number</Form.Label>
+            <Form.Control
+              type="tel"
+              name="phone"
+              placeholder="9876543210"
+              value={formData.phone}
+              onChange={handleChange}
+              className="booking-input"
+            />
+            {errors.phone && <small className="text-danger">{errors.phone}</small>}
+          </Form.Group>
 
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Check-In Date & Time</Form.Label>
-                <Form.Control type="datetime-local" name="checkIn" value={formData.checkIn} onChange={handleChange} 
-                min={new Date().toISOString().slice(0, 16)}/>
+                <Form.Label className="booking-label">Check-In</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  name="checkIn"
+                  value={formData.checkIn}
+                  onChange={handleChange}
+                  min={new Date().toISOString().slice(0, 16)}
+                  className="booking-input"
+                />
                 {errors.checkIn && <small className="text-danger">{errors.checkIn}</small>}
               </Form.Group>
             </Col>
-
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Check-Out Date & Time</Form.Label>
-                <Form.Control type="datetime-local" name="checkOut" value={formData.checkOut} onChange={handleChange} min={formData.checkIn}/>
+                <Form.Label className="booking-label">Check-Out</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  name="checkOut"
+                  value={formData.checkOut}
+                  onChange={handleChange}
+                  min={formData.checkIn}
+                  className="booking-input"
+                />
                 {errors.checkOut && <small className="text-danger">{errors.checkOut}</small>}
               </Form.Group>
             </Col>
           </Row>
+
           <Form.Group className="mb-3">
-            <Form.Label>Special Requests (Optional)</Form.Label>
-            <Form.Control as="textarea" rows={3} name="specialRequest" value={formData.specialRequest} onChange={handleChange} 
-            placeholder="Any special instructions?"/>
+            <Form.Label className="booking-label">Special Requests</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="specialRequest"
+              placeholder="Any special instructions?"
+              value={formData.specialRequest}
+              onChange={handleChange}
+              className="booking-input"
+            />
           </Form.Group>
 
-          <div className="booking-total fw-bold fs-5 mt-3">
-            Total Payable: ₹{room?.price || 0}
+          <div className="text-end fw-semibold mt-3 mb-3" style={{ fontSize: "1rem", color: "#6c4e2a" }}>
+            Total Payable: <span className="fw-bold">₹{room?.price || 0}</span>
           </div>
 
-          <Button type="submit" className="btn btn-warning text-white fw-bold mt-3">
-            Confirm Booking
+          <Button
+            type="submit"
+            className="w-100 booking-btn"
+            style={{ backgroundColor: "#b0892b", border: "none", fontWeight: "bold", fontSize: "1.05rem" }}
+          >
+            Confirm Reservation
           </Button>
         </Form>
       </Card>
@@ -148,4 +185,5 @@ const BookingForm = () => {
 };
 
 export default BookingForm;
+
 
